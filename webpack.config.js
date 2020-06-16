@@ -5,7 +5,7 @@ module.exports = async function (env, argv) {
     {
       ...env,
       babel: {
-        dangerouslyAddModulePathsToTranspile: ["@ui-kitten/components"]
+        dangerouslyAddModulePathsToTranspile: ["@ui-kitten/components", "@zimbra/api-client"]
       }
     },
     argv

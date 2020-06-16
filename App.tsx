@@ -6,7 +6,8 @@ import SignIn from "./components/account/signIn";
 import Mailbox from "./components/mailbox";
 import Message from "./components/message";
 import * as eva from "@eva-design/eva";
-import { ApplicationProvider } from "@ui-kitten/components";
+import { ApplicationProvider, IconRegistry } from "@ui-kitten/components";
+import { EvaIconsPack } from "@ui-kitten/eva-icons";
 import { AsyncStorage } from "react-native";
 
 const { Navigator, Screen } = createStackNavigator();
@@ -46,20 +47,23 @@ export default class App extends React.Component<{}, AppState> {
     }
 
     return (
-      <ApplicationProvider {...eva} theme={eva.light}>
-        <NavigationContainer>
-          <Navigator headerMode="none">
-            {this.state.authToken ? (
-              <Screen name="Inbox" component={Mailbox} />
-            ) : (
-              <>
-                <Screen name="Sign In" component={SignIn} initialParams={{ onAuthTokenUpdate: this.handleAuthTokenUpdate.bind(this) }} />
-                <Screen name="Message" component={Message} />
-              </>
-            )}
-          </Navigator>
-        </NavigationContainer>
-      </ApplicationProvider>
+      <>
+        <IconRegistry icons={EvaIconsPack} />
+        <ApplicationProvider {...eva} theme={eva.light}>
+          <NavigationContainer>
+            <Navigator>
+              {this.state.authToken ? (
+                <Screen name="Inbox" component={Mailbox} initialParams={{ authToken: this.state.authToken }} />
+              ) : (
+                <>
+                  <Screen name="Sign In" component={SignIn} initialParams={{ onAuthTokenUpdate: this.handleAuthTokenUpdate.bind(this) }} />
+                  <Screen name="Message" component={Message} />
+                </>
+              )}
+            </Navigator>
+          </NavigationContainer>
+        </ApplicationProvider>
+      </>
     );
   }
 }

@@ -1,12 +1,16 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { Icon, ListItem } from "@ui-kitten/components";
 
 export default class MailboxItem extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  renderIcon(props) {
+    return <Icon {...props} name="person" />
+  }
+
   render() {
-    return (
-      <View>
-        <Text>Sign in component</Text>
-      </View>
-    );
+    return <ListItem title={this.props.emailAddresses[0]?.name} description={this.props.subject} accessoryLeft={this.renderIcon}  />;
   }
 }

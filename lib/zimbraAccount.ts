@@ -2,7 +2,7 @@ import ZimbraService from "./zimbraService";
 
 export default class ZimbraAccount extends ZimbraService {
   constructor(host: string, authToken?: string) {
-    super(`https://proxy.bipbop.me/zimbra/service/soap/`, authToken);
+    super(`https://proxy.bipbop.me/service/soap/`, authToken);
   }
 
   async auth(username: string, password: string): Promise<AuthResponse> {
