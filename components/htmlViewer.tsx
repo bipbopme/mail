@@ -2,25 +2,6 @@ import React from "react";
 import { Dimensions } from "react-native";
 import { WebView } from "react-native-webview";
 
-const injectedJavascript = `
-  setTimeout(function() {
-    var height = document.getElementById("bipbopmail").offsetHeight;
-    var width = window.innerWidth;
-    var data = { height: height, width: width }; 
-    window.ReactNativeWebView.postMessage(JSON.stringify(data), 20); 
-  });
-  true;
-`;
-
-const injectedCss = `
-  <style>
-    #bipbopmail {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; 
-      font-size: 16px;
-      max-width: 100%;
-    }
-  </style>`;
-
 export default class HtmlViewer extends React.Component {
   state = {
     height: 1000 // Higher starting height seems to lead to better height/width calculations
@@ -42,8 +23,12 @@ export default class HtmlViewer extends React.Component {
   }
 
   isComplexHtml(html) {
-    // Obviously should be fanicer but a start
     return html.indexOf("<table") >= 0;
+  }
+
+  getInitialScale(html) {
+    // TODO: This scale should take device screen size into account
+    return this.isComplexHtml(html) ? 0.5 : 1;
   }
 
   prepHtml() {
@@ -53,7 +38,7 @@ export default class HtmlViewer extends React.Component {
       <!doctype html>
       <html>
         <head>
-          <meta name="viewport" content="width=device-width, initial-scale=${this.isComplexHtml(html) ? 0.5 : 1}" />
+          <meta name="viewport" content="width=device-width, initial-scale=${this.getInitialScale(html)}" />
           ${injectedCss}
         </head>
         <body><div id="bipbopmail">${html}</div></body>
@@ -73,3 +58,21 @@ export default class HtmlViewer extends React.Component {
     );
   }
 }
+
+const injectedJavascript = `
+  setTimeout(function() {
+    var height = document.getElementById("bipbopmail").offsetHeight;
+    var width = window.innerWidth;
+    var data = { height: height, width: width }; 
+    window.ReactNativeWebView.postMessage(JSON.stringify(data)); 
+  }, 10);
+  true;`;
+
+const injectedCss = `
+  <style>
+    #bipbopmail {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; 
+      font-size: 16px;
+      max-width: 100%;
+    }
+  </style>`;
