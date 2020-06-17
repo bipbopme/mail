@@ -23,8 +23,6 @@ export default class SignIn extends React.Component<SignInProps, SignInState> {
   constructor(props: SignInProps) {
     super(props);
 
-    console.log(props);
-
     this.zimbraAccount = new ZimbraAccount("zimbra.bipbop.me");
 
     this.state = {
@@ -52,8 +50,6 @@ export default class SignIn extends React.Component<SignInProps, SignInState> {
         this.props.route.params.onAuthTokenUpdate(response.authToken);
       }
     } catch (error) {
-      console.warn(error);
-
       this.setState({ errorMessage: "Username and password failed." });
     }
   }

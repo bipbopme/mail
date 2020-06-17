@@ -3,8 +3,8 @@ import { AppLoading } from "expo";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import SignIn from "./components/account/signIn";
-import Mailbox from "./components/mailbox";
-import Message from "./components/message";
+import ConversationList from "./components/conversationList";
+import ConversationDetail from "./components/conversationDetail";
 import * as eva from "@eva-design/eva";
 import { ApplicationProvider, IconRegistry } from "@ui-kitten/components";
 import { EvaIconsPack } from "@ui-kitten/eva-icons";
@@ -20,8 +20,6 @@ interface AppState {
 export default class App extends React.Component<{}, AppState> {
   constructor(props: {}) {
     super(props);
-
-    // Load authToken from disk
 
     this.state = {
       isReady: false,
@@ -53,12 +51,24 @@ export default class App extends React.Component<{}, AppState> {
           <NavigationContainer>
             <Navigator>
               {this.state.authToken ? (
-                <Screen name="Inbox" component={Mailbox} initialParams={{ authToken: this.state.authToken }} />
-              ) : (
                 <>
-                  <Screen name="Sign In" component={SignIn} initialParams={{ onAuthTokenUpdate: this.handleAuthTokenUpdate.bind(this) }} />
-                  <Screen name="Message" component={Message} />
+                  <Screen
+                    name="Inbox"
+                    component={ConversationList}
+                    initialParams={{ authToken: this.state.authToken }}
+                  />
+                  <Screen
+                    name="conversationDetail"
+                    component={ConversationDetail}
+                    options={({ route }) => ({ title: route.params.subject })}
+                  />
                 </>
+              ) : (
+                <Screen
+                  name="Sign In"
+                  component={SignIn}
+                  initialParams={{ onAuthTokenUpdate: this.handleAuthTokenUpdate.bind(this) }}
+                />
               )}
             </Navigator>
           </NavigationContainer>
