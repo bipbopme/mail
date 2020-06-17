@@ -7,14 +7,24 @@ export default class ConversationListItem extends React.Component {
   }
 
   navigateToMessage() {
-    this.props.navigation.navigate("conversationDetail", { id: this.props.id, subject: this.props.subject });
+    this.props.navigation.navigate("conversationDetail", {
+      id: this.props.id,
+      subject: this.props.subject
+    });
   }
 
   renderIcon(props) {
-    return <Icon {...props} name="person" />
+    return <Icon {...props} name="person" />;
   }
 
   render() {
-    return <ListItem title={this.props.emailAddresses[0]?.name} description={this.props.subject} accessoryLeft={this.renderIcon} onPress={this.navigateToMessage.bind(this)}  />;
+    return (
+      <ListItem
+        title={this.props.emailAddresses[0]?.name}
+        description={this.props.subject}
+        accessoryLeft={this.renderIcon}
+        onPress={this.navigateToMessage.bind(this)}
+      />
+    );
   }
 }

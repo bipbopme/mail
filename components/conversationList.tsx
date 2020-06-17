@@ -1,6 +1,6 @@
 import React from "react";
 import { SafeAreaView } from "react-native";
-import { Layout, List, Input, TopNavigation } from "@ui-kitten/components";
+import { Layout, List, Input, TopNavigation, Divider } from "@ui-kitten/components";
 import styles from "../styles";
 import { ZimbraBatchClient, types } from "@zimbra/api-client";
 import ConversationListItem from "./conversationListItem";
@@ -41,14 +41,6 @@ export default class ConversationList extends React.Component<IMailboxProps, IMa
     this.setState({ conversations: response.conversations });
   }
 
-  renderHeader() {
-    return (
-      <Layout style={{ paddingHorizontal: 16, paddingTop: 10, paddingBottom: 8 }} level="1">
-        <Input placeholder="Search" />
-      </Layout>
-    );
-  }
-
   renderItem({ item }) {
     return <ConversationListItem {...item} navigation={this.props.navigation} />;
   }
@@ -56,13 +48,12 @@ export default class ConversationList extends React.Component<IMailboxProps, IMa
   render() {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: "#ffffff" }}>
-        {/* <TopNavigation title="Mail" alignment="center" />
-        <Divider /> */}
+        <TopNavigation title="Inbox" alignment="center" />
+        <Divider />
         <List
           style={{ flex: 1 }}
           data={this.state.conversations}
           renderItem={this.renderItem.bind(this)}
-          ListHeaderComponent={this.renderHeader}
         />
       </SafeAreaView>
     );

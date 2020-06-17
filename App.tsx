@@ -49,7 +49,7 @@ export default class App extends React.Component<{}, AppState> {
         <IconRegistry icons={EvaIconsPack} />
         <ApplicationProvider {...eva} theme={eva.light}>
           <NavigationContainer>
-            <Navigator>
+            <Navigator headerMode="none">
               {this.state.authToken ? (
                 <>
                   <Screen

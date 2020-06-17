@@ -1,8 +1,9 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { Text, SafeAreaView } from "react-native";
 import { ZimbraBatchClient, types } from "@zimbra/api-client";
 import { createZimbraClient } from "../lib/utils";
 import MessageList from "./messageList";
+import { Layout, List, Input, TopNavigation, Divider, TopNavigationAction, Icon, ListItem } from "@ui-kitten/components";
 
 export default class ConversationDetail extends React.Component {
   zimbra: ZimbraBatchClient | undefined;
@@ -26,15 +27,31 @@ export default class ConversationDetail extends React.Component {
 
     this.setState({ conversation });
   }
+
+  handleBackActionPress() {
+    this.props.navigation.goBack();
+  }
+
+  renderBackIcon(props) {
+    return <Icon {...props} name="arrow-back" />;
+  }
+
+  renderAccessoryLeft() {
+    return <TopNavigationAction icon={this.renderBackIcon} onPress={this.handleBackActionPress.bind(this)} />;
+  }
+
   render() {
     return (
-      <>
-        { this.state.conversation ? (
+      <SafeAreaView style={{ flex: 1, backgroundColor: "#ffffff" }}>
+        <TopNavigation accessoryLeft={this.renderAccessoryLeft.bind(this)} />
+        <Divider />
+        <ListItem title={this.props.route.params.subject} />
+        {this.state.conversation ? (
           <MessageList messages={this.state.conversation.messages} />
         ) : (
           <Text>Loading...</Text>
         )}
-      </>
+      </SafeAreaView>
     );
   }
 }
