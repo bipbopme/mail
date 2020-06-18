@@ -1,14 +1,20 @@
-import { Divider, List, Text, TopNavigation } from "@ui-kitten/components";
+import { Divider, Icon, List, TopNavigation, TopNavigationAction, useStyleSheet } from "@ui-kitten/components";
+import { Platform, SafeAreaView } from "react-native";
 
 import ConversationListItem from "./ListItem";
+import LoadingScreen from "../shared/LoadingScreen";
 import React from "react";
-import { SafeAreaView } from "react-native";
 import { createZimbraClient } from "../../utils";
+import themedStyles from "../../styles";
 import useSWR from "swr";
 
 const REFRESH_INTERVAL_SECONDS = 60 * 1000;
 
+const MenuIcon = (props) => <Icon {...props} name="menu" />;
+
 function ConversationList({ navigation }) {
+  const styles = useStyleSheet(themedStyles);
+  
   async function fetcher(_key, query) {
     return (await createZimbraClient()).search({ query });
   }
@@ -19,25 +25,23 @@ function ConversationList({ navigation }) {
     return <ConversationListItem {...item} navigation={navigation} />;
   }
 
-  if (error) {
-    console.error(error);
-
-    return <Text>Error</Text>;
-  }
+  const MenuAction = () => (
+    <TopNavigationAction icon={MenuIcon} />
+  );
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#ffffff" }}>
-      <TopNavigation title="Inbox" alignment="center" />
+    <SafeAreaView style={styles.safeAreaView}>
+      <TopNavigation style={styles.topNavigation} title="Inbox" alignment={Platform.select({ android: "start", default: "center" })} accessoryLeft={MenuAction} />
       <Divider />
       {data ? (
         <List
-          style={{ flex: 1 }}
+          style={styles.list}
           data={data.conversations}
           renderItem={renderItem}
           ItemSeparatorComponent={Divider}
         />
       ) : (
-        <Text>Loading...</Text>
+        <LoadingScreen error={error} />
       )}
     </SafeAreaView>
   );

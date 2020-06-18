@@ -1,10 +1,12 @@
-import { Button, Input, Layout, Text } from "@ui-kitten/components";
+import { Button, Input, Layout, Text, useStyleSheet } from "@ui-kitten/components";
 import React, { useState } from "react";
 
 import { createZimbraClient } from "../../utils";
-import styles from "../../styles";
+import themedStyles from "../../styles";
 
 function SignIn({ route }) {
+  const styles = useStyleSheet(themedStyles);
+  
   const [username, setUsername] = useState(null);
   const [password, setPassword] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);

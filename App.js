@@ -1,5 +1,6 @@
 import * as eva from "@eva-design/eva";
 
+import { Appearance, AppearanceProvider } from "react-native-appearance";
 import { ApplicationProvider, IconRegistry } from "@ui-kitten/components";
 
 import { AppLoading } from "expo";
@@ -20,14 +21,24 @@ class App extends React.Component {
 
     this.state = {
       authToken: null,
-      isReady: false
+      isReady: false,
+      systemColorScheme: Appearance.getColorScheme()
     };
   }
 
   async componentDidMount() {
     const authToken = await AsyncStorage.getItem("authToken");
-
     this.setState({ authToken, isReady: true });
+
+    this.appearanceListener = Appearance.addChangeListener(({ colorScheme }) => {
+      this.setState({ systemColorScheme: colorScheme });
+    });
+  }
+
+  componentWillUnmount() {
+    if (this.appearanceListener) {
+      this.appearanceListener.remove();
+    }
   }
 
   handleAuthTokenUpdate(authToken) {
@@ -42,32 +53,34 @@ class App extends React.Component {
     }
 
     return (
-      <ApplicationProvider {...eva} theme={eva.light}>
-        <IconRegistry icons={EvaIconsPack} />
-        <NavigationContainer>
-          <Navigator headerMode="none">
-            {this.state.authToken ? (
-              <>
+      <ApplicationProvider {...eva} theme={eva[this.state.systemColorScheme]}>
+        <AppearanceProvider>
+          <IconRegistry icons={EvaIconsPack} />
+          <NavigationContainer>
+            <Navigator headerMode="none">
+              {this.state.authToken ? (
+                <>
+                  <Screen
+                    name="Inbox"
+                    component={ConversationList}
+                    initialParams={{ authToken: this.state.authToken }}
+                  />
+                  <Screen
+                    name="conversationDetail"
+                    component={ConversationDetail}
+                    options={({ route }) => ({ title: route.params.subject })}
+                  />
+                </>
+              ) : (
                 <Screen
-                  name="Inbox"
-                  component={ConversationList}
-                  initialParams={{ authToken: this.state.authToken }}
+                  name="Sign In"
+                  component={SignIn}
+                  initialParams={{ onAuthTokenUpdate: this.handleAuthTokenUpdate.bind(this) }}
                 />
-                <Screen
-                  name="conversationDetail"
-                  component={ConversationDetail}
-                  options={({ route }) => ({ title: route.params.subject })}
-                />
-              </>
-            ) : (
-              <Screen
-                name="Sign In"
-                component={SignIn}
-                initialParams={{ onAuthTokenUpdate: this.handleAuthTokenUpdate.bind(this) }}
-              />
-            )}
-          </Navigator>
-        </NavigationContainer>
+              )}
+            </Navigator>
+          </NavigationContainer>
+        </AppearanceProvider>
       </ApplicationProvider>
     );
   }

@@ -1,7 +1,8 @@
-import { Dimensions, Text } from "react-native";
 import React, { useState } from "react";
 
+import { Dimensions } from "react-native";
 import { WebView } from "react-native-webview";
+import { useTheme } from "@ui-kitten/components";
 
 const injectedJavascript = `
   setTimeout(function() {
@@ -12,18 +13,27 @@ const injectedJavascript = `
   }, 10);
   true;`;
 
-const injectedCss = `
-  <style>
-    #bipbopmail {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; 
-      font-size: 16px;
-      max-width: 100%;
-    }
-  </style>`;
-
 function HtmlViewer({ html }) {
+  const theme = useTheme();
+
   // Higher starting height seems to lead to better height/width calculations
   const [height, setHeight] = useState(1000);
+
+  const injectedCss = `
+  <style>
+    body {
+      background: ${theme["background-basic-color-1"]};
+      color: ${theme["text-basic-color"]};
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; 
+      font-size: 16px;
+      margin: 0;
+      padding: 0;
+    }
+    
+    a {
+      color: ${theme["color-primary-default"]};
+    }
+  </style>`;
 
   function handleWebViewMessage(event) {
     const { height, width } = JSON.parse(event.nativeEvent.data);
@@ -62,7 +72,7 @@ function HtmlViewer({ html }) {
       onMessage={handleWebViewMessage}
       injectedJavaScript={injectedJavascript}
       scrollEnabled={false}
-      style={{ flex: 0, height: height }}
+      style={{ backgroundColor: theme["background-basic-color-1"], flex: 0, height: height }}
     />
   );
 }

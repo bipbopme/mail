@@ -7,15 +7,13 @@ function ConversationListItem({ navigation, id, subject, emailAddresses }) {
     navigation.navigate("conversationDetail", { id: id, subject: subject });
   }
 
-  function renderIcon(props) {
-    return <Icon {...props} name="person" />;
-  }
+  const PersonIcon = (props) => <Icon {...props} name="person" />;
 
   return (
     <ListItem
       title={emailAddresses[0].name}
       description={subject}
-      accessoryLeft={renderIcon}
+      accessoryLeft={PersonIcon}
       onPress={navigateToConversation}
     />
   );
