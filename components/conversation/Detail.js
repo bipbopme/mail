@@ -1,27 +1,21 @@
 import { Divider, Icon, ListItem, TopNavigation, TopNavigationAction } from "@ui-kitten/components";
-import React, { useEffect, useState } from "react";
 import { SafeAreaView, Text } from "react-native";
 
 import MessageList from "../message/List";
+import React from "react";
 import { createZimbraClient } from "../../utils";
+import useSWR from "swr";
 
 function ConversationDetail({ navigation, route }) {
-  const [conversation, setConversation] = useState(null);
-  
-  async function fetchConversations() {
-    const zimbra = await createZimbraClient();
-    const conversation = await zimbra.getConversation({
-      id: route.params.id,
+  async function fetcher(_key, id) {
+    return (await createZimbraClient()).getConversation({
+      id,
       fetch: "all",
       html: true
     });
-
-    setConversation(conversation);
   }
 
-  useEffect(() => {
-    fetchConversations();
-  }, []);
+  const { data, error } = useSWR(["getConversation", route.params.id], fetcher);
 
   function handleBackActionPress() {
     navigation.goBack();
@@ -32,12 +26,7 @@ function ConversationDetail({ navigation, route }) {
   }
 
   function renderBackButton() {
-    return (
-      <TopNavigationAction
-        icon={BackIcon}
-        onPress={handleBackActionPress}
-      />
-    );
+    return <TopNavigationAction icon={BackIcon} onPress={handleBackActionPress} />;
   }
 
   return (
@@ -45,7 +34,11 @@ function ConversationDetail({ navigation, route }) {
       <TopNavigation accessoryLeft={renderBackButton} />
       <Divider />
       <ListItem title={route.params.subject} />
-      {conversation ? <MessageList messages={conversation.messages} /> : <Text>Loading...</Text>}
+      { data ? (
+        <MessageList messages={data.messages} />
+      ) : (
+        <Text>Loading...</Text>
+      )}
     </SafeAreaView>
   );
 }
