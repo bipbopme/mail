@@ -7,7 +7,7 @@ import { AsyncStorage, StatusBar } from "react-native";
 import { AppLoading } from "expo";
 import AuthNavigator from "./navigators/Auth";
 import { EvaIconsPack } from "@ui-kitten/eva-icons";
-import MailboxNavigator from "./navigators/Mailbox"
+import MainNavigator from "./navigators/Main"
 import { NavigationContainer } from "@react-navigation/native";
 import React from "react";
 
@@ -59,7 +59,7 @@ class App extends React.Component {
           <IconRegistry icons={EvaIconsPack} />
           <NavigationContainer>
             {this.state.authToken ? (
-              <MailboxNavigator />
+              <MainNavigator />
             ) : (
               <AuthNavigator onAuthTokenUpdate={this.handleAuthTokenUpdate.bind(this)} />
             )}
