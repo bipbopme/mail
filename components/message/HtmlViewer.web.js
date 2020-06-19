@@ -4,9 +4,7 @@ import { useStyleSheet } from "@ui-kitten/components";
 
 function HtmlViewer({ html }) {
   const styles = useStyleSheet(themedStyles);
-
-  console.log(styles);
-
+  
   return (
     <div
       style={{

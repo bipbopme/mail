@@ -1,5 +1,4 @@
-import { Platform, StatusBar } from "react-native";
-
+import { Platform } from "react-native";
 import { StyleService } from "@ui-kitten/components";
 
 const styles = StyleService.create({
@@ -17,12 +16,7 @@ const styles = StyleService.create({
 
   safeAreaView: {
     backgroundColor: "background-basic-color-1",
-    flex: 1,
-    ...Platform.select({
-      android: {
-        paddingTop: StatusBar.currentHeight
-      }
-    })
+    flex: 1
   },
 
   topNavigation: {},

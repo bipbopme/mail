@@ -2,9 +2,9 @@ import * as eva from "@eva-design/eva";
 
 import { Appearance, AppearanceProvider } from "react-native-appearance";
 import { ApplicationProvider, IconRegistry } from "@ui-kitten/components";
+import { AsyncStorage, StatusBar } from "react-native";
 
 import { AppLoading } from "expo";
-import { AsyncStorage } from "react-native";
 import ConversationDetail from "./components/conversation/Detail";
 import ConversationList from "./components/conversation/List";
 import { EvaIconsPack } from "@ui-kitten/eva-icons";
@@ -22,7 +22,7 @@ class App extends React.Component {
     this.state = {
       authToken: null,
       isReady: false,
-      systemColorScheme: Appearance.getColorScheme()
+      systemColorScheme: Appearance.getColorScheme() == "dark" ? "dark" : "light"
     };
   }
 
@@ -52,8 +52,13 @@ class App extends React.Component {
       return <AppLoading />;
     }
 
+    const colorScheme = this.state.systemColorScheme;
+    const isLight = colorScheme === "light"
+
     return (
-      <ApplicationProvider {...eva} theme={eva[this.state.systemColorScheme]}>
+      <ApplicationProvider {...eva} theme={eva[colorScheme]}>
+        {/* TODO: Replace these with theme color variables */}
+        <StatusBar backgroundColor={isLight ? "#ffffff" : "#222b45"} barStyle={isLight ? "dark-content" : "light-content"} />
         <AppearanceProvider>
           <IconRegistry icons={EvaIconsPack} />
           <NavigationContainer>
