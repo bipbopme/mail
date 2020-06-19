@@ -2,7 +2,8 @@ import React, { useState } from "react";
 
 import { Dimensions } from "react-native";
 import { WebView } from "react-native-webview";
-import { useTheme } from "@ui-kitten/components";
+import themedStyles from "../../styles";
+import { useStyleSheet } from "@ui-kitten/components";
 
 const injectedJavascript = `
   setTimeout(function() {
@@ -14,24 +15,24 @@ const injectedJavascript = `
   true;`;
 
 function HtmlViewer({ html }) {
-  const theme = useTheme();
+  // This is some kind of guess at the average message height
+  const [height, setHeight] = useState(200);
+  const [isReady, setIsReady] = useState(false);
 
-  // Higher starting height seems to lead to better height/width calculations
-  const [height, setHeight] = useState(1000);
-
+  const styles = useStyleSheet(themedStyles);
   const injectedCss = `
   <style>
     body {
-      background: ${theme["background-basic-color-1"]};
-      color: ${theme["text-basic-color"]};
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; 
-      font-size: 16px;
+      background: ${styles.htmlViewer.backgroundColor};
+      color: ${styles.htmlViewer.color};
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", sans-serif;
+      font-size: ${styles.htmlViewer.fontSize};
       margin: 0;
       padding: 0;
     }
     
     a {
-      color: ${theme["color-primary-default"]};
+      color: ${styles.htmlViewerAnchor.color};
     }
   </style>`;
 
@@ -42,6 +43,7 @@ function HtmlViewer({ html }) {
     const zoom = (Dimensions.get("window").width - 40) / width;
 
     setHeight(height * zoom + 20);
+    setTimeout(() => { setIsReady(true) }, 10);
   }
 
   function isComplexHtml() {
@@ -72,7 +74,12 @@ function HtmlViewer({ html }) {
       onMessage={handleWebViewMessage}
       injectedJavaScript={injectedJavascript}
       scrollEnabled={false}
-      style={{ backgroundColor: theme["background-basic-color-1"], flex: 0, height: height }}
+      style={{
+        ...styles.htmlViewer,
+        flex: 0,
+        height: height,
+        opacity: isReady ? 1 : 0
+      }}
     />
   );
 }

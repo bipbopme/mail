@@ -33,6 +33,23 @@ const styles = StyleService.create({
 
   subjectHeading: {
     paddingLeft: 11
+  },
+
+  htmlViewer: {
+    color: "text-basic-color",
+    backgroundColor: "background-basic-color-1",
+    ...Platform.select({
+      default: {
+        fontSize: "16px"
+      },
+      web: {
+        fontSize: "15px"
+      }
+    })
+  },
+
+  htmlViewerAnchor: {
+    color: "color-primary-default"
   }
 });
 
