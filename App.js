@@ -5,15 +5,11 @@ import { ApplicationProvider, IconRegistry } from "@ui-kitten/components";
 import { AsyncStorage, StatusBar } from "react-native";
 
 import { AppLoading } from "expo";
-import ConversationDetail from "./components/conversation/Detail";
-import ConversationList from "./components/conversation/List";
+import AuthNavigator from "./navigators/Auth";
 import { EvaIconsPack } from "@ui-kitten/eva-icons";
+import MailboxNavigator from "./navigators/Mailbox"
 import { NavigationContainer } from "@react-navigation/native";
 import React from "react";
-import SignIn from "./components/account/SignIn";
-import { createStackNavigator } from "@react-navigation/stack";
-
-const { Navigator, Screen } = createStackNavigator();
 
 class App extends React.Component {
   constructor(props) {
@@ -62,28 +58,11 @@ class App extends React.Component {
         <AppearanceProvider>
           <IconRegistry icons={EvaIconsPack} />
           <NavigationContainer>
-            <Navigator headerMode="none">
-              {this.state.authToken ? (
-                <>
-                  <Screen
-                    name="Inbox"
-                    component={ConversationList}
-                    initialParams={{ authToken: this.state.authToken }}
-                  />
-                  <Screen
-                    name="conversationDetail"
-                    component={ConversationDetail}
-                    options={({ route }) => ({ title: route.params.subject })}
-                  />
-                </>
-              ) : (
-                <Screen
-                  name="Sign In"
-                  component={SignIn}
-                  initialParams={{ onAuthTokenUpdate: this.handleAuthTokenUpdate.bind(this) }}
-                />
-              )}
-            </Navigator>
+            {this.state.authToken ? (
+              <MailboxNavigator />
+            ) : (
+              <AuthNavigator onAuthTokenUpdate={this.handleAuthTokenUpdate.bind(this)} />
+            )}
           </NavigationContainer>
         </AppearanceProvider>
       </ApplicationProvider>
