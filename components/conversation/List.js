@@ -39,7 +39,6 @@ function ConversationList({ navigation, route }) {
           style={styles.list}
           data={data.conversations}
           renderItem={renderItem}
-          ItemSeparatorComponent={Divider}
         />
       ) : (
         <LoadingScreen error={error} />

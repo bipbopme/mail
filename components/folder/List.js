@@ -1,4 +1,4 @@
-import { Drawer, DrawerItem, Icon, IndexPath, useStyleSheet } from "@ui-kitten/components";
+import { Drawer, DrawerItem, Icon, IndexPath, Text, TopNavigation, useStyleSheet } from "@ui-kitten/components";
 
 import React from "react";
 import { SafeAreaView } from "react-native";
@@ -27,12 +27,16 @@ function FolderList({ navigation, state, folders }) {
 
   return (
     <SafeAreaView style={styles.safeAreaView}>
+      <TopNavigation
+        title={() => <Text style={styles.logo}>bipbop:mail</Text>}
+        style={{ paddingLeft: 16 }}
+      />
       <Drawer
         selectedIndex={new IndexPath(state.index)}
         onSelect={(index) => navigation.navigate(state.routeNames[index.row])}
       >
         {folders.map((folder) => (
-          <DrawerItem title={folder.name} accessoryLeft={iconMap[folder.name] || iconMap.Default} />
+          <DrawerItem key={folder.id} title={folder.name} accessoryLeft={iconMap[folder.name] || iconMap.Default} />
         ))}
       </Drawer>
     </SafeAreaView>

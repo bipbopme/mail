@@ -1,4 +1,6 @@
+import * as Font from "expo-font";
 import * as eva from "@eva-design/eva";
+import * as themes from "./themes";
 
 import { Appearance, AppearanceProvider } from "react-native-appearance";
 import { ApplicationProvider, IconRegistry } from "@ui-kitten/components";
@@ -24,11 +26,16 @@ class App extends React.Component {
 
   async componentDidMount() {
     const authToken = await AsyncStorage.getItem("authToken");
-    this.setState({ authToken, isReady: true });
+
+    await Font.loadAsync({
+      "Nunito-Bold": require("./assets/fonts/Nunito-Bold.ttf")
+    });
 
     this.appearanceListener = Appearance.addChangeListener(({ colorScheme }) => {
       this.setState({ systemColorScheme: colorScheme });
     });
+
+    this.setState({ authToken, isReady: true });
   }
 
   componentWillUnmount() {
@@ -52,9 +59,12 @@ class App extends React.Component {
     const isLight = colorScheme === "light"
 
     return (
-      <ApplicationProvider {...eva} theme={eva[colorScheme]}>
+      <ApplicationProvider {...eva} theme={themes[colorScheme]} customMapping={themes.mapping}>
         {/* TODO: Replace these with theme color variables */}
-        <StatusBar backgroundColor={isLight ? "#ffffff" : "#222b45"} barStyle={isLight ? "dark-content" : "light-content"} />
+        <StatusBar
+          backgroundColor={isLight ? "#ffffff" : "#222b45"}
+          barStyle={isLight ? "dark-content" : "light-content"}
+        />
         <AppearanceProvider>
           <IconRegistry icons={EvaIconsPack} />
           <NavigationContainer>

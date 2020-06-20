@@ -19,8 +19,6 @@ const styles = StyleService.create({
     flex: 1
   },
 
-  topNavigation: {},
-
   list: {
     backgroundColor: "background-basic-color-1"
   },
@@ -44,6 +42,12 @@ const styles = StyleService.create({
 
   htmlViewerAnchor: {
     color: "color-primary-default"
+  },
+
+  logo: {
+    fontFamily: "Nunito-Bold",
+    fontSize: 19,
+    letterSpacing: -0.5
   }
 });
 
