@@ -1,5 +1,3 @@
-const { Children } = require("react");
-
 import * as eva from "@eva-design/eva";
 import * as themes from "../../themes";
 
@@ -12,10 +10,11 @@ import { useColorScheme } from "react-native-appearance";
 
 function ThemeProvider({ children }) {
   const colorScheme = useColorScheme();
-  const isLight = colorScheme === "light";
+  const isLight = colorScheme !== "dark";
+  const theme = themes[isLight ? "light": "dark"];
 
   return (
-    <ApplicationProvider {...eva} theme={themes[colorScheme]} customMapping={themes.mapping}>
+    <ApplicationProvider {...eva} theme={theme} customMapping={themes.mapping}>
       {/* TODO: Replace these with theme color variables */}
       <StatusBar
         backgroundColor={isLight ? "#ffffff" : "#222b45"}

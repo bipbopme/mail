@@ -17,6 +17,7 @@
     "@ui-kitten/components": "^5.0.0",
     "@ui-kitten/eva-icons": "^5.0.0",
     "@zimbra/api-client": "bipbopme/zm-api-js-client",
+    "base-64": "^0.1.0",
     "expo": "^37.0.0",
     "lodash": "^4.17.15",
     "react": "16.9.0",
@@ -31,7 +32,8 @@
     "react-native-user-avatar": "^1.0.7",
     "react-native-web": "^0.11.7",
     "react-native-webview": "8.1.1",
-    "swr": "^0.2.3"
+    "swr": "^0.2.3",
+    "utf8": "^3.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.8.6",

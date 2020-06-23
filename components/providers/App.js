@@ -12,12 +12,10 @@ import ThemeProvider from "./Theme";
 function AppProviders({ children }) {
   const [isReady, setIsReady] = useState(false);
 
-  useEffect(async () => {
-    await Font.loadAsync({
+  useEffect(() => {
+    Font.loadAsync({
       "Nunito-Bold": require("../../assets/fonts/Nunito-Bold.ttf")
-    });
-
-    setIsReady(true);
+    }).then(() => setIsReady(true));
   }, []);
 
   if (!isReady) {

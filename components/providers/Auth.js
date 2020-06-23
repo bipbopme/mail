@@ -3,11 +3,13 @@ import React, { useEffect, useState } from "react";
 import { AppLoading } from "expo";
 import { AsyncStorage } from "react-native";
 import { ZimbraBatchClient } from "@zimbra/api-client";
+import base64 from "base-64";
+import utf8 from "utf8";
 
 const ZIMBRA_ORIGIN = "https://proxy.bipbop.me";
 const AuthContext = React.createContext();
-const encode = (obj) => Buffer.from(obj).toString("base64");
-const decode = (str) => Buffer.from(str, "base64").toString("utf8");
+const encode = (input) => base64.encode(utf8.encode(input));
+const decode = (input) => utf8.decode(base64.decode(input));
 
 function AuthProvider({ children }) {
   const [username, setUsername] = useState(null);
@@ -63,9 +65,8 @@ function AuthProvider({ children }) {
 
   const [isReady, setIsReady] = useState(false);
 
-  useEffect(async () => {
-    await loadCredentials();
-    setIsReady(true);
+  useEffect(() => {
+    loadCredentials().then(() => setIsReady(true));
   }, []);
 
   if (!isReady) {
