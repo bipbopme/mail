@@ -1,13 +1,19 @@
-import { Divider, Icon, TopNavigation, TopNavigationAction, useStyleSheet } from "@ui-kitten/components";
+import {
+  Divider,
+  Icon,
+  TopNavigation,
+  TopNavigationAction,
+  useStyleSheet
+} from "@ui-kitten/components";
 
 import LoadingScreen from "../shared/LoadingScreen";
 import MessageList from "../message/List";
 import React from "react";
 import { SafeAreaView } from "react-native";
 import Subject from "./DetailSubject";
-import { createZimbraClient } from "../../utils";
 import themedStyles from "../../styles";
 import useSWR from "swr";
+import { useZimbra } from "../providers/Auth";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const TrashIcon = (props) => <Icon {...props} name="trash-2-outline" />;
@@ -22,9 +28,10 @@ const RightActions = () => (
 
 function ConversationDetail({ navigation, route }) {
   const styles = useStyleSheet(themedStyles);
-  
-  async function fetcher(_key, id) {
-    return (await createZimbraClient()).getConversation({
+  const zimbra = useZimbra();
+
+  async function fetcher(key, id) {
+    return zimbra(key, {
       id,
       fetch: "all",
       html: true
@@ -35,10 +42,10 @@ function ConversationDetail({ navigation, route }) {
     navigation.goBack();
   }
 
-  const BackButtonWrapper = () => <TopNavigationAction icon={BackIcon} onPress={handleBackActionPress} />;
-  const SubjectWrapper = () => (
-    <Subject subject={route.params.subject} />
+  const BackButtonWrapper = () => (
+    <TopNavigationAction icon={BackIcon} onPress={handleBackActionPress} />
   );
+  const SubjectWrapper = () => <Subject subject={route.params.subject} />;
 
   const { data, error } = useSWR(["getConversation", route.params.id], fetcher);
 

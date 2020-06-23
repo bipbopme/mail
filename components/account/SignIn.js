@@ -1,11 +1,12 @@
 import { Button, Input, Layout, Text, useStyleSheet } from "@ui-kitten/components";
 import React, { useState } from "react";
 
-import { createZimbraClient } from "../../utils";
 import themedStyles from "../../styles";
+import { useAuth } from "../providers/Auth";
 
 function SignIn({ route }) {
   const styles = useStyleSheet(themedStyles);
+  const { login } = useAuth();
   
   const [username, setUsername] = useState(null);
   const [password, setPassword] = useState(null);
@@ -14,15 +15,8 @@ function SignIn({ route }) {
   async function handleButtonPress() {
     setErrorMessage(null);
 
-    const zimbra = await createZimbraClient();
-
     try {
-      const response = await zimbra.login({ username: username, password: password });
-      const authToken = response.authToken[0]._content;
-
-      if (authToken) {
-        route.params.onAuthTokenUpdate(authToken);
-      }
+      await login(username, password);
     } catch (error) {
       if (error.message?.match(/authentication failed/)) {
         setErrorMessage("Username and password failed.");

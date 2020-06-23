@@ -1,4 +1,4 @@
-import ConversationDetail from "../components/conversation/Detail";
+import ConversationDetail from "../conversation/Detail";
 import MailboxNavigator from "./Mailbox";
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";

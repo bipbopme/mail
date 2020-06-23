@@ -1,17 +1,18 @@
-import ConversationList from "../components/conversation/List";
-import FolderList from "../components/folder/List";
-import LoadingScreen from "../components/shared/LoadingScreen";
+import ConversationList from "../conversation/List";
+import FolderList from "../folder/List";
+import LoadingScreen from "../shared/LoadingScreen";
 import React from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import { createZimbraClient } from "../utils";
 import sortBy from "lodash/sortBy";
 import useSWR from "swr";
+import { useZimbra } from "../providers/Auth";
 
 function MailboxNavigator() {
   const { Navigator, Screen } = createDrawerNavigator();
+  const zimbra = useZimbra();
 
-  async function fetcher(_key, path) {
-    return (await createZimbraClient()).getFolder({ folder: { path }, view: "message" });
+  async function fetcher(key, path) {
+    return zimbra(key, { folder: { path }, view: "message" });
   }
 
   const { data, error } = useSWR(["getFolder", "/"], fetcher);
