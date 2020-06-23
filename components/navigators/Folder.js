@@ -1,14 +1,20 @@
-import ConversationList from "../conversation/List";
+import ConversationNavigator from "./Conversation";
+import ConversationSplitNavigator from "./ConversationSplit";
 import FolderList from "../folder/List";
 import LoadingScreen from "../shared/LoadingScreen";
 import React from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import sortBy from "lodash/sortBy";
+import themedStyles from "../../styles";
+import { useDimensions } from "@react-native-community/hooks";
 import useSWR from "swr";
+import { useStyleSheet } from "@ui-kitten/components";
 import { useZimbra } from "../providers/Auth";
 
-function MailboxNavigator() {
+function FolderNavigator() {
   const { Navigator, Screen } = createDrawerNavigator();
+  const dimensions = useDimensions();
+  const styles = useStyleSheet(themedStyles);
   const zimbra = useZimbra();
 
   async function fetcher(key, path) {
@@ -25,12 +31,16 @@ function MailboxNavigator() {
     folders = sortBy(folders, "id");
 
     return (
-      <Navigator drawerContent={(props) => <FolderList {...props} folders={folders} />}>
+      <Navigator
+        drawerContent={(props) => <FolderList {...props} folders={folders} />}
+        drawerType={dimensions.window.width >= 1024 ? "permanent" : "front"}
+        drawerStyle={styles.drawer}
+      >
         {folders.map((folder) => (
           <Screen
             key={folder.name}
             name={folder.name}
-            component={ConversationList}
+            component={dimensions.window.width >= 768 ? ConversationSplitNavigator : ConversationNavigator}
             initialParams={{ name: folder.name }}
           />
         ))}
@@ -39,4 +49,4 @@ function MailboxNavigator() {
   }
 }
 
-export default MailboxNavigator;
+export default FolderNavigator;

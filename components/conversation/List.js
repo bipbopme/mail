@@ -12,6 +12,7 @@ import ConversationListItem from "./ListItem";
 import LoadingScreen from "../shared/LoadingScreen";
 import React from "react";
 import themedStyles from "../../styles";
+import { useDimensions } from "@react-native-community/hooks";
 import useSWR from "swr";
 import { useZimbra } from "../providers/Auth";
 
@@ -21,6 +22,7 @@ const MenuIcon = (props) => <Icon {...props} name="menu" />;
 
 function ConversationList({ navigation, route }) {
   const name = route.params.name;
+  const dimensions = useDimensions();
   const styles = useStyleSheet(themedStyles);
   const zimbra = useZimbra();
 
@@ -42,7 +44,7 @@ function ConversationList({ navigation, route }) {
         style={styles.topNavigation}
         title={name}
         alignment={Platform.select({ android: "start", default: "center" })}
-        accessoryLeft={MenuAction}
+        accessoryLeft={dimensions.window.width < 1024 ? MenuAction : null}
       />
       <Divider />
       {data ? (

@@ -6,12 +6,14 @@ import {
   useStyleSheet
 } from "@ui-kitten/components";
 
+import Empty from "../shared/Empty";
 import LoadingScreen from "../shared/LoadingScreen";
 import MessageList from "../message/List";
 import React from "react";
 import { SafeAreaView } from "react-native";
 import Subject from "./DetailSubject";
 import themedStyles from "../../styles";
+import { useDimensions } from "@react-native-community/hooks";
 import useSWR from "swr";
 import { useZimbra } from "../providers/Auth";
 
@@ -27,6 +29,9 @@ const RightActions = () => (
 );
 
 function ConversationDetail({ navigation, route }) {
+  if (!route.params?.id) return <Empty />
+  
+  const dimensions = useDimensions();
   const styles = useStyleSheet(themedStyles);
   const zimbra = useZimbra();
 
@@ -51,7 +56,7 @@ function ConversationDetail({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.safeAreaView}>
-      <TopNavigation accessoryLeft={BackButtonWrapper} accessoryRight={RightActions} />
+      <TopNavigation accessoryLeft={dimensions.window.width < 768 ? BackButtonWrapper : null} accessoryRight={RightActions} />
       <Divider />
       {data ? (
         <MessageList messages={data.messages} ListHeaderComponent={SubjectWrapper} />

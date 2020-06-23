@@ -48,6 +48,24 @@ const styles = StyleService.create({
     fontFamily: "Nunito-Bold",
     fontSize: 19,
     letterSpacing: -0.5
+  },
+
+  drawer: {
+    borderColor: "background-basic-color-3",
+    width: 250
+  },
+
+  splitNavigator: {
+    alignItems: "stretch",
+    backgroundColor: "red",
+    flexDirection: "row",
+    flex: 1
+  },
+
+  splitNavigatorColumn: {
+    borderColor: "background-basic-color-3",
+    borderRightWidth: 1,
+    backgroundColor: "blue"
   }
 });
 
