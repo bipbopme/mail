@@ -6,7 +6,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "postinstall": "cd node_modules/@zimbra/api-client && npm install && npm run-script build"
+    "postinstall": "cd node_modules/@zimbra/api-client && npm install && npm run-script build",
+    "build:web": "expo build:web"
   },
   "dependencies": {
     "@eva-design/eva": "^2.0.0",
@@ -20,6 +21,7 @@
     "@zimbra/api-client": "bipbopme/zm-api-js-client",
     "base-64": "^0.1.0",
     "expo": "^37.0.0",
+    "expo-cli": "^3.21.10",
     "lodash": "^4.17.15",
     "react": "16.9.0",
     "react-dom": "16.9.0",
