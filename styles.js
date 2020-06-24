@@ -51,7 +51,8 @@ const styles = StyleService.create({
   },
 
   drawer: {
-    borderColor: "background-basic-color-3",
+    borderRightColor: "background-basic-color-3",
+    borderRightWidth: 1,
     width: 250
   },
 
