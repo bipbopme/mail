@@ -1,17 +1,18 @@
-import { Layout, ListItem, useStyleSheet } from "@ui-kitten/components";
+import { Layout, ListItem, Text, useStyleSheet } from "@ui-kitten/components";
 
 import Avatar from "../shared/Avatar";
 import HtmlViewer from "./HtmlViewer";
 import React from "react";
 import themedStyles from "../../styles";
 
-function MessageListItem({ from, html, to }) {
+function MessageListItem({ to, from, text, html }) {
   const styles = useStyleSheet(themedStyles);
+  const isHtml = (!text || text.length === 0) && (html && html.length > 0)
 
   function getToNames() {
     return to.map((e) => e.displayName).join(", ");
   }
-  
+
   return (
     <>
       <ListItem
@@ -21,7 +22,7 @@ function MessageListItem({ from, html, to }) {
         style={{ paddingHorizontal: 20 }}
       />
       <Layout style={styles.paddedLayout}>
-        <HtmlViewer html={html} />
+        {isHtml ? <HtmlViewer html={html} /> : <Text>{text}</Text>}
       </Layout>
     </>
   );
