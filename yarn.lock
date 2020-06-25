@@ -3060,7 +3060,7 @@
 
 "@zimbra/api-client@bipbopme/zm-api-js-client":
   version "38.0.0"
-  resolved "https://codeload.github.com/bipbopme/zm-api-js-client/tar.gz/5c3babe46029f5eea2755079eb79fecd492b3f26"
+  resolved "https://codeload.github.com/bipbopme/zm-api-js-client/tar.gz/8ffac9ba9c9debcc5df5e5cc39b1bfe4683a2e63"
   dependencies:
     apollo-cache-inmemory "^1.6.5"
     apollo-link "^1.2.13"

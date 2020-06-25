@@ -18,7 +18,7 @@ function SplitNavigator({ initialRouteName, children, screenOptions }) {
   });
 
   const getFlexWidthStyles = (width) => {
-    return width ? { flex: "auto", width: width } : { flex: 1 };
+    return width ? { width: width } : { flex: 1 };
   };
 
   return (

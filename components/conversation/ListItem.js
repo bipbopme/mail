@@ -78,8 +78,7 @@ function ConversationListItem({
 const conversationListStyles = StyleService.create({
   listItem: {
     flex: 1,
-    flexDirection: "row",
-    fontSize: 10
+    flexDirection: "row"
   },
 
   center: {

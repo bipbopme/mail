@@ -6,7 +6,6 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "postinstall": "cd node_modules/@zimbra/api-client && npm install && npm run-script build",
     "build:web": "expo build:web"
   },
   "dependencies": {
@@ -22,6 +21,7 @@
     "base-64": "^0.1.0",
     "expo": "^37.0.0",
     "expo-cli": "^3.21.10",
+    "expo-web-browser": "~8.2.1",
     "lodash": "^4.17.15",
     "luxon": "^1.24.1",
     "react": "16.9.0",

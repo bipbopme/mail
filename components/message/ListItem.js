@@ -1,32 +1,20 @@
 import {
   Divider,
-  Layout,
   ListItem,
   StyleService,
   Text,
   useStyleSheet
 } from "@ui-kitten/components";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import Avatar from "../shared/Avatar";
 import { DateTime } from "luxon";
-import HtmlViewer from "./HtmlViewer";
+import MessageDetail from "./Detail";
 import { View } from "react-native";
-import { randomBetween } from "../../utils";
 
-function MessageListItem({ to, from, date, excerpt, text, html, flags, lastItem }) {
+function MessageListItem({ to, from, date, excerpt, text, html, flags, attachments, lastItem }) {
   const styles = useStyleSheet(messageListStyles);
-  const isHtml = (!text || text.length === 0) && html && html.length > 0;
   const [expanded, setExpanded] = useState(flags === "u" || lastItem);
-  // Delay loading of hidden HtmlViewer to improve performance
-  const [delayed, setDelayed] = useState(!expanded);
-
-  useEffect(() => {
-    if (delayed) {
-      // Randomize loading to reduce simultaneous loading of HtmlViewers
-      setTimeout(() => setDelayed(false), randomBetween(250, 500));
-    }
-  });
 
   function getToNames() {
     return to.map((e) => e.displayName).join(", ");
@@ -79,11 +67,7 @@ function MessageListItem({ to, from, date, excerpt, text, html, flags, lastItem 
           <View></View>
         </View>
       </ListItem>
-      {!delayed && (
-        <Layout style={expanded ? styles.body : styles.bodyHidden}>
-          {isHtml ? <HtmlViewer html={html} hidden={!expanded} /> : <Text>{text}</Text>}
-        </Layout>
-      )}
+      <MessageDetail {...{ text, html, attachments, styles, expanded }} />
       <Divider />
     </>
   );
@@ -92,8 +76,7 @@ function MessageListItem({ to, from, date, excerpt, text, html, flags, lastItem 
 const messageListStyles = StyleService.create({
   listItem: {
     flex: 1,
-    flexDirection: "row",
-    fontSize: 10
+    flexDirection: "row"
   },
 
   center: {

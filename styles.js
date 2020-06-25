@@ -58,7 +58,6 @@ const styles = StyleService.create({
 
   splitNavigator: {
     alignItems: "stretch",
-    backgroundColor: "red",
     flexDirection: "row",
     flex: 1
   },
@@ -66,7 +65,6 @@ const styles = StyleService.create({
   splitNavigatorColumn: {
     borderColor: "background-basic-color-3",
     borderRightWidth: 1,
-    backgroundColor: "blue"
   }
 });
 

@@ -30,9 +30,8 @@ function getInitialScale(html) {
 
 const MoreIcon = (props) => <Icon {...props} name="more-horizontal-outline" />;
 
-function HtmlViewer({ html, hidden = false }) {
+function HtmlViewer({ isReady, setIsReady, html, hidden = false }) {
   const [height, setHeight] = useState(0);
-  const [isReady, setIsReady] = useState(false);
   const [collapseQuote, setCollapseQuote] = useState(true);
   const [hasCollapsedQuote, setHasCollapsedQuote] = useState(false);
 

@@ -2,8 +2,10 @@ import React from "react";
 import themedStyles from "../../styles";
 import { useStyleSheet } from "@ui-kitten/components";
 
-function HtmlViewer({ html }) {
+function HtmlViewer({ setIsReady, html }) {
   const styles = useStyleSheet(themedStyles);
+
+  setIsReady(true);
   
   return (
     <div
