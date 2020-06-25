@@ -1,49 +1,38 @@
 import React, { useState } from "react";
+import { getInjectedCss, injectedJavaScript } from "./injectedContent";
 
 import { Dimensions } from "react-native";
 import { WebView } from "react-native-webview";
 import themedStyles from "../../styles";
 import { useStyleSheet } from "@ui-kitten/components";
 
-const injectedJavascript = `
-  setTimeout(function() {
-    var height = document.getElementById("bipbopmail").offsetHeight;
-    var width = window.innerWidth;
-    var data = { height: height, width: width }; 
-    window.ReactNativeWebView.postMessage(JSON.stringify(data)); 
-  }, 10);
-  true;`;
+function calculateHeight(contentHeight, contentWidth) {
+  // TODO: pull horizontal padding from styles
+  let zoom = 1;
 
-function HtmlViewer({ html }) {
-  // This is some kind of guess at the average message height
-  const [height, setHeight] = useState(200);
+  // Sometimes we get 0 for the content width
+  if (contentWidth > 0) {
+    zoom = (Dimensions.get("window").width - 40) / contentWidth;
+  }
+
+  // Add extra padding to the bottom so it's not cutoff
+  return contentHeight * zoom + 20;
+}
+
+function HtmlViewer({ html, hidden = false }) {
+  const [height, setHeight] = useState(0);
   const [isReady, setIsReady] = useState(false);
 
   const styles = useStyleSheet(themedStyles);
-  const injectedCss = `
-  <style>
-    body {
-      background: ${styles.htmlViewer.backgroundColor};
-      color: ${styles.htmlViewer.color};
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", sans-serif;
-      font-size: ${styles.htmlViewer.fontSize};
-      margin: 0;
-      padding: 0;
-    }
-    
-    a {
-      color: ${styles.htmlViewerAnchor.color};
-    }
-  </style>`;
+  const injectedCss = getInjectedCss(styles);
 
   function handleWebViewMessage(event) {
     const { height, width } = JSON.parse(event.nativeEvent.data);
 
-    // TODO: pull horizontal padding from styles
-    const zoom = (Dimensions.get("window").width - 40) / width;
+    setHeight(calculateHeight(height, width));
 
-    setHeight(height * zoom + 20);
-    setTimeout(() => { setIsReady(true) }, 10);
+    // We're ready now but wait a beat to prevent flicker
+    setTimeout(() => setIsReady(true), 10);
   }
 
   function isComplexHtml() {
@@ -60,7 +49,9 @@ function HtmlViewer({ html }) {
       <!doctype html>
       <html>
         <head>
-          <meta name="viewport" content="width=device-width, initial-scale=${getInitialScale(html)}" />
+          <meta name="viewport" content="width=device-width, initial-scale=${getInitialScale(
+            html
+          )}" />
           ${injectedCss}
         </head>
         <body><div id="bipbopmail">${html}</div></body>
@@ -72,12 +63,12 @@ function HtmlViewer({ html }) {
       originWhitelist={["*"]}
       source={{ html: prepHtml() }}
       onMessage={handleWebViewMessage}
-      injectedJavaScript={injectedJavascript}
+      injectedJavaScript={injectedJavaScript}
       scrollEnabled={false}
       style={{
         ...styles.htmlViewer,
         flex: 0,
-        height: height,
+        height: hidden ? 0 : height,
         opacity: isReady ? 1 : 0
       }}
     />

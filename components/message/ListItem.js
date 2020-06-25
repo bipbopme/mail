@@ -1,31 +1,146 @@
-import { Layout, ListItem, Text, useStyleSheet } from "@ui-kitten/components";
+import {
+  Divider,
+  Layout,
+  ListItem,
+  StyleService,
+  Text,
+  useStyleSheet
+} from "@ui-kitten/components";
+import React, { useEffect, useState } from "react";
 
 import Avatar from "../shared/Avatar";
+import { DateTime } from "luxon";
 import HtmlViewer from "./HtmlViewer";
-import React from "react";
-import themedStyles from "../../styles";
+import { View } from "react-native";
+import { randomBetween } from "../../utils";
 
-function MessageListItem({ to, from, text, html }) {
-  const styles = useStyleSheet(themedStyles);
-  const isHtml = (!text || text.length === 0) && (html && html.length > 0)
+function MessageListItem({ to, from, date, excerpt, text, html, flags, lastItem }) {
+  const styles = useStyleSheet(messageListStyles);
+  const isHtml = (!text || text.length === 0) && html && html.length > 0;
+  const [expanded, setExpanded] = useState(flags === "u" || lastItem);
+  // Delay loading of hidden HtmlViewer to improve performance
+  const [delayed, setDelayed] = useState(!expanded);
+
+  useEffect(() => {
+    if (delayed) {
+      // Randomize loading to reduce simultaneous loading of HtmlViewers
+      setTimeout(() => setDelayed(false), randomBetween(250, 500));
+    }
+  });
 
   function getToNames() {
     return to.map((e) => e.displayName).join(", ");
   }
 
+  function getNames(emailAddresses) {
+    if (emailAddresses.length > 1) {
+      return emailAddresses.map((e) => e.displayName).join(", ");
+    } else {
+      return emailAddresses[0].name || emailAddresses[0].displayName;
+    }
+  }
+
+  function getAvatarName(emailAddresses) {
+    return emailAddresses[0].name || emailAddresses[0].displayName?.slice(0, 2)?.toUpperCase();
+  }
+
+  function getFormattedDate() {
+    const dateTime = DateTime.fromMillis(date);
+    const now = DateTime.local();
+
+    if (dateTime.toISODate() === now.toISODate()) {
+      return dateTime.toFormat("t");
+    } else {
+      return dateTime.toFormat("MMM d");
+    }
+  }
+
   return (
     <>
-      <ListItem
-        title={from[0].name}
-        description={`to ${getToNames()}`}
-        accessoryLeft={() => <Avatar name={from[0].name} />}
-        style={{ paddingHorizontal: 20 }}
-      />
-      <Layout style={styles.paddedLayout}>
-        {isHtml ? <HtmlViewer html={html} /> : <Text>{text}</Text>}
-      </Layout>
+      <ListItem onPress={() => setExpanded(!expanded)}>
+        <View style={styles.listItem}>
+          <View>
+            <Avatar name={getAvatarName(from)} />
+          </View>
+          <View style={styles.center}>
+            <Text style={styles.names}>
+              {getNames(from)} <Text style={styles.date}>{getFormattedDate()}</Text>
+            </Text>
+            {expanded ? (
+              <Text numberOfLines={1} style={styles.excerpt}>
+                to {getNames(to)}
+              </Text>
+            ) : (
+              <Text numberOfLines={1} style={styles.excerpt}>
+                {excerpt}
+              </Text>
+            )}
+          </View>
+          <View></View>
+        </View>
+      </ListItem>
+      {!delayed && (
+        <Layout style={expanded ? styles.body : styles.bodyHidden}>
+          {isHtml ? <HtmlViewer html={html} hidden={!expanded} /> : <Text>{text}</Text>}
+        </Layout>
+      )}
+      <Divider />
     </>
   );
 }
+
+const messageListStyles = StyleService.create({
+  listItem: {
+    flex: 1,
+    flexDirection: "row",
+    fontSize: 10
+  },
+
+  center: {
+    flex: 1,
+    paddingHorizontal: 12
+  },
+
+  names: {
+    color: "text-basic-color",
+    fontSize: 15
+  },
+
+  subject: {
+    color: "text-hint-color",
+    fontSize: 14,
+    paddingTop: 2
+  },
+
+  count: {
+    color: "text-hint-color",
+    fontSize: 12
+  },
+
+  excerpt: {
+    color: "text-hint-color",
+    fontSize: 14,
+    paddingTop: 2
+  },
+
+  date: {
+    color: "text-hint-color",
+    fontSize: 13
+  },
+
+  unread: {
+    color: "text-basic-color",
+    fontWeight: "600"
+  },
+
+  bodyHidden: {
+    paddingHorizontal: 20
+  },
+
+  body: {
+    paddingHorizontal: 20,
+    paddingTop: 10
+  }
+});
 
 export default MessageListItem;
