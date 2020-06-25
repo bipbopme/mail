@@ -2,22 +2,10 @@ import { Button, Icon, useStyleSheet } from "@ui-kitten/components";
 import React, { useState } from "react";
 import { getInjectedCss, getInjectedJavaScript } from "./injectedContent";
 
-import { Dimensions } from "react-native";
-import { WebView } from "react-native-webview";
+import { View } from "react-native";
+import WebView from "../shared/WebView";
 import themedStyles from "../../styles";
-
-function calculateHeight(contentHeight, contentWidth) {
-  // TODO: pull horizontal padding from styles
-  let zoom = 1;
-
-  // Sometimes we get 0 for the content width
-  if (contentWidth > 0) {
-    zoom = (Dimensions.get("window").width - 40) / contentWidth;
-  }
-
-  // Add extra padding to the bottom so it's not cutoff
-  return contentHeight * zoom + 20;
-}
+import { useComponentDimensions } from "../../utils";
 
 function isComplexHtml(html) {
   return html.indexOf("<table") >= 0;
@@ -31,6 +19,7 @@ function getInitialScale(html) {
 const MoreIcon = (props) => <Icon {...props} name="more-horizontal-outline" />;
 
 function HtmlViewer({ isReady, setIsReady, html, hidden = false }) {
+  const [containerDimensions, onContainerLayout] = useComponentDimensions();
   const [height, setHeight] = useState(0);
   const [collapseQuote, setCollapseQuote] = useState(true);
   const [hasCollapsedQuote, setHasCollapsedQuote] = useState(false);
@@ -38,6 +27,19 @@ function HtmlViewer({ isReady, setIsReady, html, hidden = false }) {
   const styles = useStyleSheet(themedStyles);
   const injectedCss = getInjectedCss(styles);
   const injectedJavaScript = getInjectedJavaScript(collapseQuote);
+
+  function calculateHeight(contentHeight, contentWidth) {
+    // TODO: pull horizontal padding from styles
+    let zoom = 1;
+
+    // Sometimes we get 0 for the content width
+    if (contentWidth > 0 && containerDimensions && containerDimensions.width > 0) {
+      zoom = containerDimensions.width / contentWidth;
+    }
+
+    // Add extra padding to the bottom so it's not cutoff
+    return contentHeight * zoom + 20;
+  }
 
   function handleWebViewMessage(event) {
     const { height, width, collapsedQuote } = JSON.parse(event.nativeEvent.data);
@@ -64,9 +66,8 @@ function HtmlViewer({ isReady, setIsReady, html, hidden = false }) {
   }
 
   return (
-    <>
+    <View onLayout={onContainerLayout}>
       <WebView
-        originWhitelist={["*"]}
         source={{ html: prepHtml() }}
         onMessage={handleWebViewMessage}
         scrollEnabled={false}
@@ -87,7 +88,7 @@ function HtmlViewer({ isReady, setIsReady, html, hidden = false }) {
           onPress={() => setCollapseQuote(false)}
         />
       )}
-    </>
+    </View>
   );
 }
 

@@ -1,10 +1,4 @@
-import {
-  Divider,
-  ListItem,
-  StyleService,
-  Text,
-  useStyleSheet
-} from "@ui-kitten/components";
+import { Divider, ListItem, StyleService, Text, useStyleSheet } from "@ui-kitten/components";
 import React, { useState } from "react";
 
 import Avatar from "../shared/Avatar";

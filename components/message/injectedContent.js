@@ -68,9 +68,12 @@ export function getInjectedJavaScript(collapseQuote = false) {
     let height = document.getElementById("bipbopmail").offsetHeight;
     let width = window.innerWidth;
 
-    let data = { height: height, width: width, collapsedQuote: !!dividerNode }; 
-    window.ReactNativeWebView.postMessage(JSON.stringify(data));
-    true;`
+    let data = { height: height, width: width, collapsedQuote: !!dividerNode };
+    const postMessage = (window.ReactNativeWebView && window.ReactNativeWebView.postMessage) || window.parent.postMessage;
+
+    setTimeout(function () {
+      postMessage(JSON.stringify(data));
+    }, 20);`;
 }
 
 export function getInjectedCss(styles) {
