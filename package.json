@@ -20,7 +20,7 @@
     "@zimbra/api-client": "bipbopme/zm-api-js-client",
     "base-64": "^0.1.0",
     "expo": "^37.0.0",
-    "expo-cli": "^3.21.10",
+    "expo-cli": "^3.21.12",
     "expo-web-browser": "~8.2.1",
     "lodash": "^4.17.15",
     "luxon": "^1.24.1",
